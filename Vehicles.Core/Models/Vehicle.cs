@@ -36,5 +36,8 @@
 
             Odometer += km;
         }
+
+        // prettier format
+        public string DisplayName => $"{Make} {Model}";
     }
 }
