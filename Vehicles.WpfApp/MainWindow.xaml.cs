@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Vehicles.Core;
@@ -9,8 +8,11 @@ namespace Vehicles.WpfApp
     public partial class MainWindow : Window
     {
         // collection for all vehicle types
-        private ObservableCollection<Vehicle> vehicles =
-            new ObservableCollection<Vehicle>();
+        private readonly Garage<Car> carGarage =
+            new Garage<Car>("Cars garage");
+
+        private readonly Garage<Boat> boatGarage =
+            new Garage<Boat>("Boats garage");
 
         public MainWindow()
         {
@@ -22,9 +24,20 @@ namespace Vehicles.WpfApp
             VehicleTypeComboBox.Items.Add("AmphibiousCar");
             VehicleTypeComboBox.SelectedIndex = 0;
 
-            VehiclesListBox.ItemsSource = vehicles;
+            CarsListBox.ItemsSource = carGarage.Items;
+            BoatsListBox.ItemsSource = boatGarage.Items;
+
+            carGarage.ReactionOccurred += Garage_ReactionOccurred;
+            boatGarage.ReactionOccurred += Garage_ReactionOccurred;
 
             UpdateActionButtons();
+        }
+
+        private void Garage_ReactionOccurred(
+            object? sender,
+            GarageReactionEventArgs e)
+        {
+            LogListBox.Items.Add(e.Message);
         }
 
         // add to collection
@@ -32,24 +45,31 @@ namespace Vehicles.WpfApp
         {
             try
             {
-                string make = MakeTextBox.Text;
+                string brand = BrandTextBox.Text;
                 string model = ModelTextBox.Text;
 
                 Vehicle vehicle;
 
-                // choose vehicle type to create
                 switch (VehicleTypeComboBox.SelectedItem?.ToString())
                 {
                     case "Car":
-                        vehicle = new Car(make, model);
+                        Car car = new Car(brand, model);
+                        carGarage.Add(car);
+                        vehicle = car;
                         break;
 
                     case "Boat":
-                        vehicle = new Boat(make, model);
+                        Boat boat = new Boat(brand, model);
+                        boatGarage.Add(boat);
+                        vehicle = boat;
                         break;
 
                     case "AmphibiousCar":
-                        vehicle = new AmphibiousCar(make, model);
+                        AmphibiousCar amphibiousCar =
+                            new AmphibiousCar(brand, model);
+
+                        carGarage.Add(amphibiousCar);
+                        vehicle = amphibiousCar;
                         break;
 
                     default:
@@ -57,12 +77,10 @@ namespace Vehicles.WpfApp
                         return;
                 }
 
-                vehicles.Add(vehicle);
-
                 LogListBox.Items.Add(
                     $"Added: {vehicle.DisplayName}");
 
-                MakeTextBox.Clear();
+                BrandTextBox.Clear();
                 ModelTextBox.Clear();
             }
             catch (ArgumentException ex)
@@ -71,18 +89,38 @@ namespace Vehicles.WpfApp
             }
         }
 
-        private void VehiclesListBox_SelectionChanged(
+        private void GarageListBox_SelectionChanged(
             object sender,
             SelectionChangedEventArgs e)
         {
+            if (sender == CarsListBox &&
+                CarsListBox.SelectedItem is not null)
+            {
+                BoatsListBox.SelectedItem = null;
+            }
+
+            if (sender == BoatsListBox &&
+                BoatsListBox.SelectedItem is not null)
+            {
+                CarsListBox.SelectedItem = null;
+            }
+
             UpdateSelectedVehicleInfo();
             UpdateActionButtons();
+        }
+
+        private Vehicle? GetSelectedVehicle()
+        {
+            return CarsListBox.SelectedItem as Vehicle
+                ?? BoatsListBox.SelectedItem as Vehicle;
         }
 
         // info about selected vehicle
         private void UpdateSelectedVehicleInfo()
         {
-            if (VehiclesListBox.SelectedItem is not Vehicle vehicle)
+            Vehicle? vehicle = GetSelectedVehicle();
+
+            if (vehicle is null)
             {
                 SelectedVehicleTextBlock.Text =
                     "No vehicle selected";
@@ -97,17 +135,17 @@ namespace Vehicles.WpfApp
         // buttons enabling
         private void UpdateActionButtons()
         {
-            Vehicle? vehicle =
-                VehiclesListBox.SelectedItem as Vehicle;
+            Vehicle? vehicle = GetSelectedVehicle();
 
-            MoveButton.IsEnabled =
-                vehicle is not null;
+            MoveButton.IsEnabled = vehicle is not null;
 
-            DriveButton.IsEnabled =
-                vehicle is IDriveable;
+            DriveButton.IsEnabled = vehicle is IDriveable;
 
-            SwimButton.IsEnabled =
-                vehicle is ISwimmable;
+            SwimButton.IsEnabled = vehicle is ISwimmable;
+
+            RemoveCarButton.IsEnabled = CarsListBox.SelectedItem is Car;
+
+            RemoveBoatButton.IsEnabled = BoatsListBox.SelectedItem is Boat;
         }
 
         private bool TryGetDistance(out double km)
@@ -125,7 +163,9 @@ namespace Vehicles.WpfApp
             object sender,
             RoutedEventArgs e)
         {
-            if (VehiclesListBox.SelectedItem is not Vehicle vehicle)
+            Vehicle? vehicle = GetSelectedVehicle();
+
+            if (vehicle is null)
             {
                 MessageBox.Show("Please select a vehicle.");
                 return;
@@ -155,7 +195,7 @@ namespace Vehicles.WpfApp
             object sender,
             RoutedEventArgs e)
         {
-            if (VehiclesListBox.SelectedItem is not IDriveable driveable)
+            if (GetSelectedVehicle() is not IDriveable driveable)
             {
                 MessageBox.Show("This vehicle cannot drive.");
                 return;
@@ -185,7 +225,7 @@ namespace Vehicles.WpfApp
             object sender,
             RoutedEventArgs e)
         {
-            if (VehiclesListBox.SelectedItem is not ISwimmable swimmable)
+            if (GetSelectedVehicle() is not ISwimmable swimmable)
             {
                 MessageBox.Show("This vehicle cannot swim.");
                 return;
@@ -209,6 +249,46 @@ namespace Vehicles.WpfApp
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void RemoveCarButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (CarsListBox.SelectedItem is not Car car)
+            {
+                MessageBox.Show("Please select a car.");
+                return;
+            }
+
+            if (carGarage.Remove(car))
+            {
+                LogListBox.Items.Add(
+                    $"Removed: {car.DisplayName}");
+            }
+
+            UpdateSelectedVehicleInfo();
+            UpdateActionButtons();
+        }
+
+        private void RemoveBoatButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (BoatsListBox.SelectedItem is not Boat boat)
+            {
+                MessageBox.Show("Please select a boat.");
+                return;
+            }
+
+            if (boatGarage.Remove(boat))
+            {
+                LogListBox.Items.Add(
+                    $"Removed: {boat.DisplayName}");
+            }
+
+            UpdateSelectedVehicleInfo();
+            UpdateActionButtons();
         }
     }
 }

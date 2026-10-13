@@ -6,18 +6,16 @@ namespace Vehicles.Core
 {
     public class AmphibiousCar : Car, ISwimmable
     {
-        // calls Car constructor
-        public AmphibiousCar(string make, string model)
-            : base(make, model)
+        public AmphibiousCar(string brand, string model)
+            : base(brand, model)
         {
         }
 
-        // move in water
         public string Swim(double km)
         {
             AddKm(km);
 
-            return $"{Make} {Model} swam {km} km.";
+            return $"{Brand} {Model} swam {km} km.";
         }
     }
 }

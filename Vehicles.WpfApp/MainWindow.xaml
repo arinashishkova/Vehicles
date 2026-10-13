@@ -33,9 +33,9 @@
                       Height="32"
                       Margin="0,5,0,12"/>
 
-            <TextBlock Text="Make:"/>
+            <TextBlock Text="Brand:"/>
 
-            <TextBox x:Name="MakeTextBox"
+            <TextBox x:Name="BrandTextBox"
                      Height="32"
                      Margin="0,5,0,12"/>
 
@@ -98,25 +98,25 @@
                 </Grid.ColumnDefinitions>
 
                 <Button x:Name="MoveButton"
-            Grid.Column="0"
-            Content="Move"
-            Height="34"
-            Margin="0,0,6,0"
-            Click="MoveButton_Click"/>
+                        Grid.Column="0"
+                        Content="Move"
+                        Height="34"
+                        Margin="0,0,6,0"
+                        Click="MoveButton_Click"/>
 
                 <Button x:Name="DriveButton"
-            Grid.Column="1"
-            Content="Drive"
-            Height="34"
-            Margin="3,0,3,0"
-            Click="DriveButton_Click"/>
+                        Grid.Column="1"
+                        Content="Drive"
+                        Height="34"
+                        Margin="3,0,3,0"
+                        Click="DriveButton_Click"/>
 
                 <Button x:Name="SwimButton"
-            Grid.Column="2"
-            Content="Swim"
-            Height="34"
-            Margin="6,0,0,0"
-            Click="SwimButton_Click"/>
+                        Grid.Column="2"
+                        Content="Swim"
+                        Height="34"
+                        Margin="6,0,0,0"
+                        Click="SwimButton_Click"/>
 
             </Grid>
 
@@ -144,20 +144,81 @@
                    Margin="0,0,0,5"/>
 
 
-            <!-- VEHICLE LIST TITLE -->
+            <!-- GARAGES TITLE -->
             <TextBlock Grid.Row="1"
-                       Text="Vehicle list"
+                       Text="Garages"
                        FontSize="18"
                        FontWeight="Bold"
                        Margin="0,0,0,7"/>
 
 
-            <!-- VEHICLE LIST -->
-            <ListBox x:Name="VehiclesListBox"
-                     Grid.Row="2"
-                     DisplayMemberPath="DisplayName"
-                     SelectionChanged="VehiclesListBox_SelectionChanged"
-                     Margin="0,0,0,18"/>
+            <!-- GARAGES -->
+            <Grid Grid.Row="2"
+                  Margin="0,0,0,18">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <!-- CARS GARAGE -->
+                <GroupBox Grid.Column="0"
+          Header="Cars garage">
+
+                    <Grid Margin="5">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <ListBox x:Name="CarsListBox"
+                 Grid.Row="0"
+                 DisplayMemberPath="DisplayName"
+                 SelectionChanged="GarageListBox_SelectionChanged"
+                 Margin="0,0,0,8"/>
+
+                        <Button x:Name="RemoveCarButton"
+                Grid.Row="1"
+                Content="Remove"
+                Height="32"
+                Click="RemoveCarButton_Click"/>
+
+                    </Grid>
+
+                </GroupBox>
+
+
+                <!-- BOATS GARAGE -->
+                <GroupBox Grid.Column="2"
+          Header="Boats garage">
+
+                    <Grid Margin="5">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <ListBox x:Name="BoatsListBox"
+                 Grid.Row="0"
+                 DisplayMemberPath="DisplayName"
+                 SelectionChanged="GarageListBox_SelectionChanged"
+                 Margin="0,0,0,8"/>
+
+                        <Button x:Name="RemoveBoatButton"
+                Grid.Row="1"
+                Content="Remove"
+                Height="32"
+                Click="RemoveBoatButton_Click"/>
+
+                    </Grid>
+
+                </GroupBox>
+
+            </Grid>
 
 
             <!-- LOG TITLE -->
