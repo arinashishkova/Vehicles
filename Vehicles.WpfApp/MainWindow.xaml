@@ -203,16 +203,16 @@
                         </Grid.RowDefinitions>
 
                         <ListBox x:Name="BoatsListBox"
-                 Grid.Row="0"
-                 DisplayMemberPath="DisplayName"
-                 SelectionChanged="GarageListBox_SelectionChanged"
-                 Margin="0,0,0,8"/>
+                                 Grid.Row="0"
+                                 DisplayMemberPath="DisplayName"
+                                 SelectionChanged="GarageListBox_SelectionChanged"
+                                 Margin="0,0,0,8"/>
 
                         <Button x:Name="RemoveBoatButton"
-                Grid.Row="1"
-                Content="Remove"
-                Height="32"
-                Click="RemoveBoatButton_Click"/>
+                                    Grid.Row="1"
+                                    Content="Remove"
+                                    Height="32"
+                                    Click="RemoveBoatButton_Click"/>
 
                     </Grid>
 

@@ -1,13 +1,12 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Vehicles.Core;
 
 namespace Vehicles.WpfApp
 {
     public partial class MainWindow : Window
     {
-        // collection for all vehicle types
+        // typed garages
         private readonly Garage<Car> carGarage =
             new Garage<Car>("Cars garage");
 
@@ -18,7 +17,6 @@ namespace Vehicles.WpfApp
         {
             InitializeComponent();
 
-            // visible in app vehicles
             VehicleTypeComboBox.Items.Add("Car");
             VehicleTypeComboBox.Items.Add("Boat");
             VehicleTypeComboBox.Items.Add("AmphibiousCar");
@@ -40,7 +38,7 @@ namespace Vehicles.WpfApp
             LogListBox.Items.Add(e.Message);
         }
 
-        // add to collection
+        // add vehicle
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             try

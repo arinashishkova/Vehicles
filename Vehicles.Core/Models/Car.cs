@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Vehicles.Core
+﻿namespace Vehicles.Core
 {
     public class Car : Vehicle, IDriveable
     {

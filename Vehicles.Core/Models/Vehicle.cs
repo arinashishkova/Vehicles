@@ -37,7 +37,6 @@
             Odometer += km;
         }
 
-        // prettier format
         public string DisplayName => $"{Brand} {Model}";
 
         public virtual string Signal(Vehicle newcomer)
